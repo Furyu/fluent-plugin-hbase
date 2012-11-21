@@ -1,0 +1,97 @@
+= HBase output plugin for Fluent event collector
+
+== Overview
+
+*HBase* output plugin buffers event logs in local file and puts it to HBase periodically.
+
+== Installation
+
+Simply use RubyGems:
+
+    gem install fluent-plugin-hbase
+
+== Configuration
+
+    <match pattern>
+      type hbase
+
+      tag_column_name HBASE_COLUMN
+      time_column_name HBASE_COLUMN
+      fields_to_columns_mapping MAPPING_FROM_JSON_FIELDS_TO_HBASE_COLUMNS
+      hbase_host YOUR_HBASE_HOST
+      hbase_port YOUR_HBASE_PORT
+      hbase_table YOUR_HBASE_TABLE_NAME
+    </match>
+
+[tag_column_name (required)] The HBase column to save the tag attached to each Fleuntd event log,
+in the format "[Column family name]:[Column name]".
+For example, to save tags to the column "c" in the column family "cf", use "cf:c".
+
+[time_column_name (required)] The HBase column to save the time each Fluentd event log was sent,
+in the format "[Column family name]:[Colum name]".
+For example, to save the time to the column "t" in the column family "cf", use "cf:t".
+
+[fields_to_columns_mapping (required)] The mapping from JSON fields to HBase columns,
+in the format "[JSON_FIELD1]=>[HBASE_COLUMN1],[JSON_FIELD2]=>[HBASE_COLUMN2],...".
+
+Each JSON_FIELD is formatted as field names separated by dot(.)s, e.g. "a.b.c".
+Each HBASE_COLUMN is formatted as a tripled of a column family name, a colon(:), a column name, e.g. "cf:c".
+
+[hbase_host (required)] HBase host
+
+[hbase_port (required)] HBase port
+
+[hbase_table (required)] HBase table name
+
+See example/fluent.conf for the configuration should work.
+
+You can also test the configuration running a fluentd instance:
+
+ fluentd -c example/fluent.conf --plugin lib/fluent/plugin
+
+== Prerequiresites
+
+You must setup your own Hadoop and HBase clusters and open appropriate ports to enable
+the plugin to access HBase via HBase Thrift Server.
+
+The plugin is tested solely on the system with:
+
+- Hadoop 1.0.4
+- HBase 0.94.0
+- Java 1.6.0_37
+- Mac OS X 10.8 Mountain Lion
+
+for now.
+
+Please let me know if you find the plugin to work in any other environments.
+
+== Running
+
+To make the plugin work, you need running instances of:
+
+- Hadoop
+- HBase
+- HBase Thrift Server w/ the compact (buffered) protocol (not the framed protocol)
+
+The procedure may be:
+
+1. Start Hadoop
+
+ $ start-all.sh
+
+2. Start HBase
+
+ $ start-hbase.sh
+
+3. Start HBase Thrift Server with the compact protocol
+
+Use the thread pool server as it is the only server supports the compact protocol:
+
+ $ hbase thrift start -threadpool
+
+4. Run Fluentd
+
+== Copyright
+
+Copyright:: Copyright (c) 2012 FURYU CORPORATION
+License::   Apache License, Version 2.0
