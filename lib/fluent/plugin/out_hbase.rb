@@ -26,6 +26,7 @@ module Fluent
     config_param :hbase_host, :string, :default => 'localhost'
     config_param :hbase_port, :integer, :default => 9090
     config_param :hbase_table, :string
+    config_param :time_format, :string, :default => nil
 
     def configure(conf)
       super
@@ -34,6 +35,7 @@ module Fluent
         src_to_dst.split("=>")
       }
       @mapping = Hash[*@fields_to_columns.flatten]
+      @timef = TimeFormatter.new(@time_format, @localtime)
     end
 
     def start
@@ -66,9 +68,10 @@ MESSAGE
 
     def format(tag, time, record)
       row_values = {}
-
+      time_str = @timef.format(time)
+      
       row_values[@tag_column_name] = tag unless @tag_column_name.nil?
-      row_values[@time_column_name] = time unless @time_column_name.nil?
+      row_values[@time_column_name] = time_str unless @time_column_name.nil?
 
       @fields_to_columns.each {|field,column|
 
