@@ -8,6 +8,18 @@ module Fluent
       require 'massive_record'
     end
 
+    # Format dates with ISO 8606 by default
+    # http://www.w3.org/TR/NOTE-datetime
+    config_param :time_format, :string, :default => '%Y-%m-%dT%H:%M:%S.%L%:z'
+
+    include SetTagKeyMixin
+    config_set_default :include_tag_key, false
+    config_set_default :tag_key, nil
+
+    include SetTimeKeyMixin
+    config_set_default :include_time_key, false
+    config_set_default :time_key, nil
+
     config_param :tag_column_name, :string, :default => nil
     config_param :time_column_name, :string, :default => nil
     config_param :fields_to_columns_mapping, :string

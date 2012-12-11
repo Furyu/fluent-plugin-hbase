@@ -15,19 +15,57 @@ Simply use RubyGems:
     <match pattern>
       type hbase
 
-      tag_column_name HBASE_COLUMN
-      time_column_name HBASE_COLUMN
+      include_time_key TRUE_OR_FALSE
+      time_key KEY_IN_RECORD
+      include_tag_key TRUE_OR_FALSE
+      tag_key KEY_IN_RECORD
       fields_to_columns_mapping MAPPING_FROM_JSON_FIELDS_TO_HBASE_COLUMNS
       hbase_host YOUR_HBASE_HOST
       hbase_port YOUR_HBASE_PORT
       hbase_table YOUR_HBASE_TABLE_NAME
+
+      # DEPRECATED
+      # The below configuration keys are deprecated to
+      # stay along with fluentd's well-known configuration keys.
+      # Instead, use:
+      # - include_time_key
+      # - time_key
+      # - include_tag_key
+      # - tag_key
+      # - fields_to_columns_mapping
+      tag_column_name HBASE_COLUMN
+      time_column_name HBASE_COLUMN
     </match>
 
-[tag_column_name (required)] The HBase column to save the tag attached to each Fleuntd event log,
+[include_time_key (optional)] If you need to write each event's time to HBase, set this true
+and add a mapping from the 'time_key' to HBase column to the 'fields_to_columns_mapping' configuration.
+
+The default is false.
+
+[time_key (optional)] The key where each event's time is kept for mapping to a HBase column.
+
+You MUST add a mapping from the key configured here to a HBase column,
+to actually write times to HBase.
+
+The default is "time".
+
+[include_tag_key (optional)] If you need to write each event's tag to HBase, set this true
+and add a mapping from the 'tag_key' to HBase column to the 'fields_to_columns_mapping' configuration.
+
+The default is false.
+
+[tag_key (optional)] The key where each event's tag is kept for mapping to a HBase column.
+
+You MUST add a mapping from the key configured here to a HBase column,
+to actually write tags to HBase.
+
+The default is "tag".
+
+[tag_column_name (deprecated)] The HBase column to save the tag attached to each Fleuntd event log,
 in the format "[Column family name]:[Column name]".
 For example, to save tags to the column "c" in the column family "cf", use "cf:c".
 
-[time_column_name (required)] The HBase column to save the time each Fluentd event log was sent,
+[time_column_name (deprecated)] The HBase column to save the time each Fluentd event log was sent,
 in the format "[Column family name]:[Colum name]".
 For example, to save the time to the column "t" in the column family "cf", use "cf:t".
 

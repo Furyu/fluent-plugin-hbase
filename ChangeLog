@@ -4,3 +4,7 @@ Release 0.1.0 - 2012/11/19
 
   * First release
 
+Release 0.1.1. - 2012/12/11
+
+  * Stay with fluentd's well-known configuration keys for tag and time logging
+  * Support for logging each event's time in formatted text
