@@ -43,11 +43,11 @@ module Fluent
       @table = MassiveRecord::Wrapper::Table.new(@conn, @hbase_table.intern)
 
       unless @table.exists?
-        columns = [@tag_column_name, @time_column_name] + @mapping.values
+        columns = ([@tag_column_name, @time_column_name] + @mapping.values).reject(&:nil?)
         column_families = columns.map {|column_family_with_column|
           column_family, column = column_family_with_column.split(":")
 
-          if column.nil?
+          if column.nil? or column_family.nil?
             raise <<MESSAGE
 Unexpected format for column name: #{column_family_with_column}
 Each destination column in the 'record_to_columns_mapping' option
@@ -58,6 +58,7 @@ MESSAGE
 
           column_family.intern
         }
+        column_families.uniq!
 
         @table.create_column_families(column_families)
         @table.save
