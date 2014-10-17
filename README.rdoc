@@ -1,5 +1,14 @@
 = HBase output plugin for Fluent event collector
 
+----------
+
+  NOTICE
+
+This library has been moved to {yuuna/fluent-plugin-hbase}[https://github.com/yuuna/fluent-plugin-hbase/] in October 2014,
+as the author is no longer a member of this organization and decided to hand over the maintenance of the library to active users/maintainers.
+
+----------
+
 == Overview
 
 *HBase* output plugin buffers event logs in local file and puts it to HBase periodically.
